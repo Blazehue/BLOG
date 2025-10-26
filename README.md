@@ -308,7 +308,7 @@ Project Link: [https://github.com/Blazehue/BLOG](https://github.com/Blazehue/BLO
 <div align="center">
 
 Made with ❤️ by [Blazehue](https://github.com/Blazehue)
-
+Rest API functionalities to be added soon.
 ⭐ Star this repo if you find it helpful!
 
 </div>
