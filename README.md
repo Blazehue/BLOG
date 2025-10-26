@@ -1,4 +1,4 @@
-# 📝 BLOG - Editorial Magazine Style Platform
+# 📝 BLOG - Editorial Magazine Style Platform(Still a prototype more features to be added!)
 
 <div align="center">
 
