@@ -2,8 +2,24 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BlogCard from "@/components/BlogCard";
 import { blogPosts } from "@/data/blogPosts";
+import { useBlog } from "@/contexts/BlogContext";
 
 const Index = () => {
+  const { getPublishedBlogs } = useBlog();
+  
+  // Get all published blogs from users
+  const userPublishedBlogs = getPublishedBlogs();
+  
+  // Combine sample blogs with user-created published blogs
+  const allBlogs = [...blogPosts, ...userPublishedBlogs];
+  
+  // Sort by date (newest first)
+  const sortedBlogs = allBlogs.sort((a, b) => {
+    const dateA = new Date((a as any).date || (a as any).updatedAt || (a as any).createdAt || Date.now()).getTime();
+    const dateB = new Date((b as any).date || (b as any).updatedAt || (b as any).createdAt || Date.now()).getTime();
+    return dateB - dateA;
+  });
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -18,7 +34,7 @@ const Index = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {blogPosts.map((post) => (
+            {sortedBlogs.map((post) => (
               <BlogCard key={post.id} {...post} />
             ))}
           </div>
