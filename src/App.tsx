@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -7,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { BlogProvider } from "@/contexts/BlogContext";
 import { ThemeProvider } from "@/components/theme-provider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import SplashScreen from "@/components/SplashScreen";
 import Index from "./pages/Index";
 import BlogPost from "./pages/BlogPost";
 import Login from "./pages/Login";
@@ -20,34 +22,57 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <ThemeProvider defaultTheme="light" storageKey="blog-theme">
-      <AuthProvider>
-        <BlogProvider>
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <BrowserRouter>
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/post/:id" element={<BlogPost />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                
-                {/* Protected Routes */}
-                <Route
-                  path="/dashboard"
-                  element={
-                    <ProtectedRoute>
-                      <Dashboard />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/my-blogs"
-                  element={
-                    <ProtectedRoute>
+const App = () => {
+  const [showSplash, setShowSplash] = useState(true);
+  const [hasShownSplash, setHasShownSplash] = useState(false);
+
+  useEffect(() => {
+    // Check if splash has been shown in this session
+    const splashShown = sessionStorage.getItem("splashShown");
+    if (splashShown) {
+      setShowSplash(false);
+      setHasShownSplash(true);
+    }
+  }, []);
+
+  const handleSplashComplete = () => {
+    setShowSplash(false);
+    setHasShownSplash(true);
+    sessionStorage.setItem("splashShown", "true");
+  };
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider defaultTheme="light" storageKey="blog-theme">
+        <AuthProvider>
+          <BlogProvider>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              {showSplash && !hasShownSplash && (
+                <SplashScreen onComplete={handleSplashComplete} />
+              )}
+              <div className={`${showSplash && !hasShownSplash ? "opacity-0" : "opacity-100 transition-opacity duration-500"}`}>
+                <BrowserRouter>
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/post/:id" element={<BlogPost />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
+                    
+                    {/* Protected Routes */}
+                    <Route
+                      path="/dashboard"
+                      element={
+                        <ProtectedRoute>
+                          <Dashboard />
+                        </ProtectedRoute>
+                      }
+                    />
+                    <Route
+                      path="/my-blogs"
+                      element={
+                        <ProtectedRoute>
                       <MyBlogs />
                     </ProtectedRoute>
                   }
@@ -81,11 +106,13 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
-          </TooltipProvider>
-        </BlogProvider>
-      </AuthProvider>
-    </ThemeProvider>
-  </QueryClientProvider>
-);
+          </div>
+        </TooltipProvider>
+      </BlogProvider>
+    </AuthProvider>
+  </ThemeProvider>
+</QueryClientProvider>
+  );
+};
 
 export default App;
