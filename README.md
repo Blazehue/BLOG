@@ -1,4 +1,4 @@
-# 📝 BLOG - Modern Editorial Magazine Platform
+# BLOG - Modern Editorial Magazine Platform
 
 <div align="center">
 
